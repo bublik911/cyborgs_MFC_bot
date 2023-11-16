@@ -1,25 +1,25 @@
 from peewee import *
 from playhouse.pool import PooledMySQLDatabase
 
-db = PooledMySQLDatabase(
-    host='127.0.0.1',
-    user='user',
+db = MySQLDatabase(
+    host='localhost',
+    user='egor',
     password='Root767!',
-    database='mk',
-    timeout=0,
+    database='cyborgs',
     charset='utf8mb4'
 )
+db.connect()
 
 
 class Player(Model):
     id = AutoField()
     name = CharField()
     phone_number = CharField()
-    chat_id = CharField()
+    chat_id = CharField(null=True)
     status = IntegerField()
 
     class Meta:
-        db_table = 'consultants'
+        db_table = 'player'
         database = db
 
 
