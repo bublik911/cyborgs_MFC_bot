@@ -1,4 +1,5 @@
 from keyboards.authorization import authorization_keyboard
+from keyboards.admins import admin_keyboard
 from aiogram import Bot
 from DataBase.models_db import Player
 from states import Start
@@ -26,7 +27,8 @@ async def start(message: Message, state: FSMContext):
 )
 async def authorization(message: Message):
     if Player.select().where(Player.phone_number == message.contact.phone_number).count() == 0:
-        await message.answer("Похоже, ты еще не Киборг и тебе пора записаться на тренировку к нам!\n")
+        await message.answer("Похоже, ты еще не Киборг и тебе пора записаться на тренировку к нам!\n",
+                             reply_markup=admin_keyboard())
     else:
         await message.answer("Отлично! Жди оповещений о тренировках.")
         Player.update(chat_id=message.chat.id).where(Player.phone_number == message.contact.phone_number).execute()
