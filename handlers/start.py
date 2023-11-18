@@ -1,6 +1,6 @@
 from keyboards.authorization import authorization_keyboard
 from keyboards.admins import admin_keyboard
-from aiogram import Bot
+from keyboards.admin_panel import admin_panel_keyboard
 from DataBase.models_db import Player
 from states import Start
 from aiogram import Router
@@ -9,7 +9,6 @@ from aiogram.filters import Command
 from aiogram.fsm.context import FSMContext
 
 
-bot = Bot(token="6635292265:AAH8uLVCLZ1RD44J_an5AZ6tBIrisJXwjqI")
 router = Router()
 
 
@@ -25,10 +24,21 @@ async def start(message: Message, state: FSMContext):
 @router.message(
     Start.authorization
 )
-async def authorization(message: Message):
-    if Player.select().where(Player.phone_number == message.contact.phone_number).count() == 0:
-        await message.answer("Похоже, ты еще не Киборг и тебе пора записаться на тренировку к нам!\n",
-                             reply_markup=admin_keyboard())
-    else:
-        await message.answer("Отлично! Жди оповещений о тренировках.")
-        Player.update(chat_id=message.chat.id).where(Player.phone_number == message.contact.phone_number).execute()
+async def authorization(message: Message, state: FSMContext):
+    try:
+        if Player.select().where(Player.phone_number == message.contact.phone_number).count() == 0:
+            await message.answer("Похоже, ты еще не Киборг и тебе пора записаться на тренировку к нам!\n",
+                                 reply_markup=admin_keyboard())
+        if Player.get(Player.phone_number == message.contact.phone_number).status == 0:
+            await message.answer("Отлично! Жди оповещений о тренировках.")
+            Player.update(chat_id=message.chat.id).where(Player.phone_number == message.contact.phone_number).execute()
+            await state.clear()
+        if Player.get(Player.phone_number == message.contact.phone_number).status == 1:
+            Player.update(chat_id=message.chat.id).where(Player.phone_number == message.contact.phone_number).execute()
+            await message.answer("Выбери, что хочешь сделать",
+                                 reply_markup=admin_panel_keyboard())
+            await state.set_state(Start.admin)
+    except AttributeError:
+        await message.answer("Используй кнопку ниже, чтобы поделиться своим номером телефона",
+                             reply_markup=authorization_keyboard())
+
