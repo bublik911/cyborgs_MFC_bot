@@ -23,4 +23,18 @@ class Player(Model):
         database = db
 
 
+class Events(Model):
+    id = AutoField()
+    type_of_event = CharField()
+    place = CharField()
+    date = DateField()
+    time = TimeField()
+    # completed = BooleanField()
+
+    class Meta:
+        db_table = 'event'
+        database = db
+
+
 Player.create_table()
+Events.create_table()
