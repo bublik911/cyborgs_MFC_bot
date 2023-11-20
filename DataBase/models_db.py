@@ -17,6 +17,7 @@ class Player(Model):
     phone_number = CharField()
     chat_id = CharField(null=True)
     status = IntegerField()
+    place = CharField()
 
     class Meta:
         db_table = 'player'
@@ -29,12 +30,25 @@ class Events(Model):
     place = CharField()
     date = DateField()
     time = TimeField()
-    # completed = BooleanField()
+    send = CharField(null=True)
+    completed = CharField(null=True)
 
     class Meta:
         db_table = 'event'
         database = db
 
 
+class Mark(Model):
+    id = AutoField()
+    event_id = IntegerField()
+    player_id = IntegerField()
+    status = IntegerField(null=True)
+
+    class Meta:
+        db_table = 'mark'
+        database = db
+
+
 Player.create_table()
 Events.create_table()
+Mark.create_table()
