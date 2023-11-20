@@ -14,6 +14,9 @@ router = Router()
 
 
 @router.message(
+    F.text == "Создать событие"
+)
+@router.message(
     Start.admin
 )
 async def create_event(message: Message, state: FSMContext):
@@ -59,7 +62,7 @@ async def day_of_event(message: Message, state: FSMContext):
 )
 async def time_of_event(message: Message, state: FSMContext):
     await state.update_data(day=message.text)
-    await message.answer("Вo сколько? (формат ввода: 15:00")
+    await message.answer("Вo сколько? (Формат: часы:минуты)")
     await state.set_state(Event.finish)
 
 
@@ -71,17 +74,22 @@ async def commit_event(message: Message, state: FSMContext):
     event = await state.get_data()
     day = int(event['day'])
     if day < int(str(datetime.date.today()).split("-")[2]) and int(str(datetime.date.today()).split("-")[1] != 12):
-        month = int(str(datetime.date.today()).split("-")[1])  + 1
+        month = int(str(datetime.date.today()).split("-")[1]) + 1
+        year = int(str(datetime.date.today()).split("-")[0])
     elif day < int(str(datetime.date.today()).split("-")[2]) and int(str(datetime.date.today()).split("-")[1] == 12):
         month = 1
+        year = int(str(datetime.date.today()).split("-")[0]) + 1
     else:
         month = int(str(datetime.date.today()).split("-")[1])
+        year = int(str(datetime.date.today()).split("-")[0])
     h, m = str(event['time']).split(":")
     # try:
     Events.create(type_of_event=event['type'],
                  place=event['place'],
-                 date=datetime.date(2023, month, day),
-                 time=datetime.time(int(h), int(m)))
+                 date=datetime.date(year, month, day),
+                 time=datetime.time(int(h), int(m))
+                  )
+
     await state.clear()
     # except:
     #     await message.answer("Error")
