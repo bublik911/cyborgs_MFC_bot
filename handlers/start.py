@@ -26,15 +26,15 @@ async def start(message: Message, state: FSMContext):
 )
 async def authorization(message: Message, state: FSMContext):
     try:
-        if Player.select().where(Player.phone_number == message.contact.phone_number).count() == 0:
+        if Player.select().where(Player.phone_number == message.contact.phone_number[-10:]).count() == 0:
             await message.answer("Похоже, ты еще не Киборг и тебе пора записаться на тренировку к нам!\n",
                                  reply_markup=admin_keyboard())
-        if Player.get(Player.phone_number == message.contact.phone_number).status == 0:
+        if Player.get(Player.phone_number == message.contact.phone_number[-10:]).status == 0:
             await message.answer("Отлично! Жди оповещений о тренировках.")
-            Player.update(chat_id=message.chat.id).where(Player.phone_number == message.contact.phone_number).execute()
+            Player.update(chat_id=message.chat.id).where(Player.phone_number == message.contact.phone_number[-10:]).execute()
             await state.clear()
-        if Player.get(Player.phone_number == message.contact.phone_number).status == 1:
-            Player.update(chat_id=message.chat.id).where(Player.phone_number == message.contact.phone_number).execute()
+        if Player.get(Player.phone_number == message.contact.phone_number[-10:]).status == 1:
+            Player.update(chat_id=message.chat.id).where(Player.phone_number == message.contact.phone_number[-10:]).execute()
             await message.answer("Выбери, что хочешь сделать",
                                  reply_markup=admin_panel_keyboard())
             await state.set_state(Start.admin)
