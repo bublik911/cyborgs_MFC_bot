@@ -16,9 +16,6 @@ router = Router()
 @router.message(
     F.text == "Создать событие"
 )
-@router.message(
-    Start.admin
-)
 async def create_event(message: Message, state: FSMContext):
     await message.answer("Какое событие создаем?",
                          reply_markup=event_type_keyboard())

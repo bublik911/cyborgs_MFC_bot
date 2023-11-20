@@ -12,3 +12,9 @@ class Event(StatesGroup):
     date = State()
     time = State()
     finish = State()
+
+
+class AddPlayer(StatesGroup):
+    name = State()
+    phone = State()
+    status = State()

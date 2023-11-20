@@ -4,6 +4,16 @@ from aiogram import Bot
 from DataBase.models_db import *
 
 
+def phone_parse(x) -> str:
+    s = str(x)
+    phone = ''
+    for i in s:
+        if i.isdigit():
+            phone += i
+    phone = phone[-10:]
+    return phone
+
+
 async def notification_for_chatbot(bot: Bot):
     events_table = Events.select().where(Events.completed.is_null())
     hour = datetime.datetime.now().time().hour
