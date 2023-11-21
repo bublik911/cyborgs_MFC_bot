@@ -1,20 +1,24 @@
-import datetime
-from keyboards.admin_panel import admin_panel_keyboard
 from aiogram import Router, F
-from DataBase.models_db import *
 from aiogram.types import Message
+from aiogram.fsm.context import FSMContext
+
+from states import Event
+
+from misc.constValues import ADD_EVENT, TRAINING, GAME
+
+from keyboards.admin_panel import admin_panel_keyboard
 from keyboards.event_type import event_type_keyboard
 from keyboards.event_place import event_place_keyboard
 from keyboards.event_date import day_keyboard
-from aiogram.fsm.context import FSMContext
-from states import Event, Start
+
+from DataBase.repositories import EventRepository
 
 
 router = Router()
 
 
 @router.message(
-    F.text == "Создать событие"
+    F.text == ADD_EVENT
 )
 async def create_event(message: Message, state: FSMContext):
     await message.answer("Какое событие создаем?",
@@ -23,7 +27,7 @@ async def create_event(message: Message, state: FSMContext):
 
 
 @router.message(
-    F.text == "Тренировка",
+    F.text == TRAINING,
     Event.type
 )
 async def place_of_event(message: Message, state: FSMContext):
@@ -34,7 +38,7 @@ async def place_of_event(message: Message, state: FSMContext):
 
 
 @router.message(
-    F.text == "Матч",
+    F.text == GAME,
     Event.type
 )
 async def place_of_event(message: Message, state: FSMContext):
@@ -68,29 +72,8 @@ async def time_of_event(message: Message, state: FSMContext):
 )
 async def commit_event(message: Message, state: FSMContext):
     await state.update_data(time=message.text)
-    event = await state.get_data()
-    day = int(event['day'])
-    if day < int(str(datetime.date.today()).split("-")[2]) and int(str(datetime.date.today()).split("-")[1] != 12):
-        month = int(str(datetime.date.today()).split("-")[1]) + 1
-        year = int(str(datetime.date.today()).split("-")[0])
-    elif day < int(str(datetime.date.today()).split("-")[2]) and int(str(datetime.date.today()).split("-")[1] == 12):
-        month = 1
-        year = int(str(datetime.date.today()).split("-")[0]) + 1
-    else:
-        month = int(str(datetime.date.today()).split("-")[1])
-        year = int(str(datetime.date.today()).split("-")[0])
-    h, m = str(event['time']).split(":")
-    # try:
-    Events.create(type_of_event=event['type'],
-                 place=event['place'],
-                 date=datetime.date(year, month, day),
-                 time=datetime.time(int(h), int(m))
-                  )
-
-    await state.clear()
-    # except:
-    #     await message.answer("Error")
-    await message.answer("Событие добавлено. Игроки получат уведомление о событии за двое суток\n"
-                         "Что-то еще?",
+    await message.answer("Событие добавлено. Игроки получат уведомление о событии за двое суток\n")
+    await EventRepository.create_event(state)
+    await message.answer("Что-то еще?",
                          reply_markup=admin_panel_keyboard())
 
