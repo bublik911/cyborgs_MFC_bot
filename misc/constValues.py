@@ -1,0 +1,6 @@
+ADD_PLAYER = "Добавить игрока"
+ADD_EVENT = "Создать событие"
+FIRST_DIVISION = "ИАТЭ"
+SECOND_DIVISION = "Манеж"
+GAME = "Матч"
+TRAINING = "Тренировка"
