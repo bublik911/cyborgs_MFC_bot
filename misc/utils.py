@@ -1,5 +1,7 @@
 import datetime
 
+from dateutil.parser import parse
+
 from aiogram import Bot
 
 from keyboards.answer import answer_yes_no
@@ -21,7 +23,7 @@ async def notification_for_chatbot(bot: Bot):
     hour = datetime.datetime.now().time().hour
     day = datetime.datetime.now().date().day
     for event in events_table:
-        if event.send is not(None) and int(str(event.time).split(":")[0]) - hour == 3 and int(str(event.date).split("-")[2]) == day:
+        if event.send is not(None) and parse(event.time).hour - hour == 3 and parse(event.date).day == day:
             message = ("Привет!\n"
                        f"{event.type}, {event.place}\n"
                        f"{event.date} в {event.time}\n"
@@ -30,7 +32,7 @@ async def notification_for_chatbot(bot: Bot):
             players = PlayerRepository.get_player_by_place(event.place)
             for player in players:
                 await bot.send_message(player.chat_id, message)
-        if event.send is None and int(str(event.date).split("-")[2]) - day == 1 and int(str(event.time).split(":")[0]) - hour < 12:
+        if event.send is None and parse(event.date).day - day == 1 and parse(event.time).hour - hour < 12:
             message = ("Привет!\n"
                        f"{event.type_of_event}, {event.place}\n"
                        f"{event.date} в {event.time}\n"

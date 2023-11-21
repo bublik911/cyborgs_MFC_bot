@@ -2,6 +2,8 @@ from DataBase.models.EventModel import Event
 
 import datetime
 
+from dateutil.parser import parse
+
 from aiogram.fsm.context import FSMContext
 
 from typing import NoReturn
@@ -10,20 +12,24 @@ from typing import NoReturn
 async def create_event(state: FSMContext) -> NoReturn:
     event = await state.get_data()
     day = int(event['day'])
-    if day < int(str(datetime.date.today()).split("-")[2]) and int(str(datetime.date.today()).split("-")[1] != 12):
-        month = int(str(datetime.date.today()).split("-")[1]) + 1
-        year = int(str(datetime.date.today()).split("-")[0])
-    elif day < int(str(datetime.date.today()).split("-")[2]) and int(str(datetime.date.today()).split("-")[1] == 12):
+
+    if day < datetime.date.today().day and datetime.date.today().month != 12:
+        month = datetime.date.today().month + 1
+        year = datetime.date.today().year
+
+    elif day < datetime.date.today().day and datetime.date.today().month == 12:
         month = 1
-        year = int(str(datetime.date.today()).split("-")[0]) + 1
+        year = datetime.date.today().year + 1
+
     else:
-        month = int(str(datetime.date.today()).split("-")[1])
-        year = int(str(datetime.date.today()).split("-")[0])
-    h, m = str(event['time']).split(":")
+        month = datetime.date.today().month
+        year = datetime.date.today().year
+
+    h, m = parse(event['time']).hour, parse(event['time']).minute
     Event.create(type_of_event=event['type'],
                  place=event['place'],
                  date=datetime.date(year, month, day),
-                 time=datetime.time(int(h), int(m)))
+                 time=datetime.time(h, m))
     await state.clear()
 
 
