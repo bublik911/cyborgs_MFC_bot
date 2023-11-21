@@ -8,7 +8,6 @@ from misc.utils import notification_for_chatbot
 
 async def main():
     bot = Bot(token=env.TgKeys.TOKEN)
-    # bot = Bot(token="6635292265:AAH8uLVCLZ1RD44J_an5AZ6tBIrisJXwjqI")
     dp = Dispatcher()
     scheduler = AsyncIOScheduler()
     dp.include_routers(start.router, create_event.router, marking.router, create_player.router)
