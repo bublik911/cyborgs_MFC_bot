@@ -30,13 +30,14 @@ async def marking(callback: CallbackQuery, callback_data: MarkCallbackFactory):
         names = create_names_list(event_id)
         message = ("Всем привет!\n"
                    f"{event.type_of_event}, {event.place}\n"
-                   f"{event.date} в {event.time}"
-                   f"\n".join(names))
+                   f"{event.date} в {event.time.hour}:{event.time.minute}\n"
+                   f"Сегодня будут:\n")
+        list = "\n".join(names)
 
         if event.place == FIRST_DIVISION:
-            await bot.send_message(chat_id=-1001999805953, text=message, message_thread_id=5)
+            await bot.send_message(chat_id=-1001999805953, text=message + list, message_thread_id=5)
         elif event.place == SECOND_DIVISION:
-            await bot.send_message(chat_id=-1001999805953, text=message, message_thread_id=4)
+            await bot.send_message(chat_id=-1001999805953, text=message + list, message_thread_id=4)
 
     elif status == 0:
         await bot.send_message(chat_id=chat_id, text="Жаль, ждем тебя в следующий раз!")

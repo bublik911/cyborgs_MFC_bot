@@ -20,7 +20,7 @@ def count_player_by_phone_number(message: Message) -> int:
 
 
 def update_player_chat_id_by_phone_number(message: Message) -> NoReturn:
-    Player.update(chat_id=message.chat.id).where(Player.phone_number == message.contact.phone_number[-10:])
+    Player.update(chat_id=message.chat.id).where(Player.phone_number == message.contact.phone_number[-10:]).execute()
 
 
 def get_player_status_by_phone_number(message: Message) -> int:

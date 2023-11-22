@@ -23,19 +23,19 @@ async def notification_for_chatbot(bot: Bot):
     hour = datetime.datetime.now().time().hour
     day = datetime.datetime.now().date().day
     for event in events_table:
-        if event.send is not(None) and parse(event.time).hour - hour == 3 and parse(event.date).day == day:
+        if event.send is not(None) and event.time.hour - hour == 3 and event.date.day == day:
             message = ("Привет!\n"
-                       f"{event.type}, {event.place}\n"
-                       f"{event.date} в {event.time}\n"
+                       f"{event.type_of_event}, {event.place}\n"
+                       f"{event.date} в {event.time.hour}:{event.time.minute}\n"
                        f"Через 3 часа!")
             EventRepository.update_event_completed(event.id)
             players = PlayerRepository.get_player_by_place(event.place)
             for player in players:
                 await bot.send_message(player.chat_id, message)
-        if event.send is None and parse(event.date).day - day == 1 and parse(event.time).hour - hour < 12:
+        if event.send is None and event.date.day - day == 1 and event.time.hour - hour < 12:
             message = ("Привет!\n"
                        f"{event.type_of_event}, {event.place}\n"
-                       f"{event.date} в {event.time}\n"
+                       f"{event.date} в {event.time.hour}:{event.time.minute}\n"
                        f"Ты будешь?")
 
             players = PlayerRepository.get_player_by_place(event.place)
