@@ -30,7 +30,7 @@ async def marking(callback: CallbackQuery, callback_data: MarkCallbackFactory):
         names = create_names_list(event_id)
         message = ("Всем привет!\n"
                    f"{event.type_of_event}, {event.place}\n"
-                   f"{event.date} в {event.time.hour}:{event.time.minute}\n"
+                   f"{event.date} в {str(event.time)[:5]}\n"
                    f"Сегодня будут:\n")
         list = "\n".join(names)
 

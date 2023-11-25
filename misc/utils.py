@@ -26,7 +26,7 @@ async def notification_for_chatbot(bot: Bot):
         if event.send is not(None) and event.time.hour - hour == 3 and event.date.day == day:
             message = ("Привет!\n"
                        f"{event.type_of_event}, {event.place}\n"
-                       f"{event.date} в {event.time.hour}:{event.time.minute}\n"
+                       f"{event.date} в {str(event.time)[:5]}\n"
                        f"Через 3 часа!")
             EventRepository.update_event_completed(event.id)
             players = PlayerRepository.get_player_by_place(event.place)
@@ -35,7 +35,7 @@ async def notification_for_chatbot(bot: Bot):
         if event.send is None and event.date.day - day == 1 and event.time.hour - hour < 12:
             message = ("Привет!\n"
                        f"{event.type_of_event}, {event.place}\n"
-                       f"{event.date} в {event.time.hour}:{event.time.minute}\n"
+                       f"{event.date} в {str(event.time)[:5]}\n"
                        f"Ты будешь?")
 
             players = PlayerRepository.get_player_by_place(event.place)
