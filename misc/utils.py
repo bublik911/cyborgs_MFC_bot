@@ -21,7 +21,7 @@ def create_message_for_chat(event: Event) -> str:
 
 
 def create_message_for_notification(event: Event) -> str:
-    message = ("Всем привет!\n"
+    message = ("Привет!\n"
                f"{event.type_of_event}, {event.place}\n"
                f"{convert_date_to_weekday(event.date)} в {str(event.time)[:5]}\n"
                f"Ты будешь?")
@@ -29,7 +29,7 @@ def create_message_for_notification(event: Event) -> str:
 
 
 def create_message_for_reminder(event: Event) -> str:
-    message = ("Всем привет!\n"
+    message = ("Привет!\n"
                f"{event.type_of_event}, {event.place}\n"
                f"{convert_date_to_weekday(event.date)} в {str(event.time)[:5]}\n"
                f"Через 3 часа!")
@@ -50,6 +50,8 @@ def create_names_list(event_id: int) -> [str]:
     return names
 
 
+# TODO: Если сегодня тренировка только в манеже, то рассылка всем. Если тренировка в манеже и ИАТЭ - в один день,
+#  то рассылка по заявке
 async def notification_for_chatbot(bot: Bot):
     events_table = EventRepository.get_event_uncompleted()
     hour = datetime.datetime.now().time().hour
