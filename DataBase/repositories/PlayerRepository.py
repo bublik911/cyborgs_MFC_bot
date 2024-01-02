@@ -15,6 +15,10 @@ async def create_player(state: FSMContext) -> NoReturn:
     await state.clear()
 
 
+def create_players_list(place: str) -> [Player]:
+    return Player.select(Player.name, Player.phone_number).where((Player.place == place))
+
+
 def count_player_by_phone_number(message: Message) -> int:
     return Player.select().where(Player.phone_number == message.contact.phone_number[-10:]).count()
 
