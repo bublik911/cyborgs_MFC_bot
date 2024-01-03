@@ -8,7 +8,7 @@ from misc.constValues import ADD_EVENT, TRAINING, GAME
 
 from keyboards.admin_panel import admin_panel_keyboard
 from keyboards.event_type import event_type_keyboard
-from keyboards.event_place import event_place_keyboard
+from keyboards.place import place_keyboard
 from keyboards.event_date import day_keyboard
 
 from DataBase.repositories import EventRepository
@@ -33,7 +33,7 @@ async def create_event(message: Message, state: FSMContext):
 async def place_of_event(message: Message, state: FSMContext):
     await state.update_data(type=message.text)
     await message.answer("Где тренируемся?",
-                         reply_markup=event_place_keyboard())
+                         reply_markup=place_keyboard())
     await state.set_state(Event.place)
 
 
@@ -44,7 +44,7 @@ async def place_of_event(message: Message, state: FSMContext):
 async def place_of_event(message: Message, state: FSMContext):
     await state.update_data(type=message.text)
     await message.answer("Где играем?",
-                         reply_markup=event_place_keyboard())
+                         reply_markup=place_keyboard())
     await state.set_state(Event.place)
 
 
