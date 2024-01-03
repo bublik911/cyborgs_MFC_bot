@@ -1,13 +1,13 @@
 from aiogram.utils.keyboard import ReplyKeyboardBuilder, ReplyKeyboardMarkup
 
-from misc.constValues import CHECK_PLAYERS_LIST, ADD_PLAYER, ADD_EVENT
+from misc.constValues import TABLE_IS_CORRECT, DELETE_PLAYER, ADD_PLAYER
 
 
-def admin_panel_keyboard() -> ReplyKeyboardMarkup:
+def check_players_table_keyboard() -> ReplyKeyboardMarkup:
     keyboard = ReplyKeyboardBuilder()
-    keyboard.button(text=ADD_EVENT)
+    keyboard.button(text=TABLE_IS_CORRECT)
+    keyboard.button(text=DELETE_PLAYER)
     keyboard.button(text=ADD_PLAYER)
-    keyboard.button(text=CHECK_PLAYERS_LIST)
     return keyboard.as_markup(
         one_time_keyboard=True,
         resize_keyboard=True

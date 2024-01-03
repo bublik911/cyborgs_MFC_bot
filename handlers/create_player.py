@@ -7,7 +7,7 @@ from states import AddPlayer
 from misc.constValues import ADD_PLAYER
 from misc.utils import phone_parse
 
-from keyboards.event_place import event_place_keyboard
+from keyboards.place import place_keyboard
 from keyboards.admin_panel import admin_panel_keyboard
 
 from DataBase.repositories import PlayerRepository
@@ -38,7 +38,7 @@ async def add_client_name(message: Message, state: FSMContext):
 async def add_player_phone(message: Message, state: FSMContext):
     await state.update_data(phone=phone_parse(message.text))
     await message.answer("В заявке на какой турнир?",
-                         reply_markup=event_place_keyboard())
+                         reply_markup=place_keyboard())
     await state.set_state(AddPlayer.status)
 
 
