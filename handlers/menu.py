@@ -5,11 +5,16 @@ from aiogram.fsm.context import FSMContext
 
 from keyboards.admin_panel import admin_panel_keyboard
 
+from states import Menu
+
 router = Router()
 
 
 @router.message(
     Command("menu")
+)
+@router.message(
+    Menu.transition
 )
 async def menu(message: Message, state: FSMContext):
     await state.clear()
