@@ -10,6 +10,7 @@ class Player(Model):
     chat_id = CharField(null=True)
     status = IntegerField()
     place = CharField()
+    deleted_at = DateField(null=True)
 
     class Meta:
         db_table = 'player'
