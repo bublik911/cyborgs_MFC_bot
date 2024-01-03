@@ -7,6 +7,8 @@ class Start(StatesGroup):
 
 
 class Event(StatesGroup):
+    transition = State()
+
     type = State()
     place = State()
     date = State()
@@ -15,6 +17,22 @@ class Event(StatesGroup):
 
 
 class AddPlayer(StatesGroup):
+    transition = State()
+
     name = State()
     phone = State()
     status = State()
+
+
+class CheckPlayer(StatesGroup):
+    transition = State()
+    waiting = State()
+
+    division = State()
+    delete = State()
+    confirm = State()
+    number = State()
+
+
+class Menu(StatesGroup):
+    transition = State()
