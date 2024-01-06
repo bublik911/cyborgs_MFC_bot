@@ -34,7 +34,7 @@ async def choose_division(message: Message, state: FSMContext):
 @router.message(
     CheckPlayer.division
 )
-async def check_players_list(message: Message, state:FSMContext):
+async def check_players_list(message: Message, state: FSMContext):
     query = PlayerRepository.create_players_list(message.text)
 
     await state.update_data(place=message.text)
