@@ -53,3 +53,7 @@ def get_player_name_by_id(player_id: int) -> str:
 
 def get_player_by_place(place: str) -> [Player]:
     return Player.select().where((Player.place == place) & (Player.chat_id.is_null(False)))
+
+
+def get_all_players():
+    return Player.select().where((Player.chat_id.is_null(False)) & (Player.deleted_at.is_null()))
