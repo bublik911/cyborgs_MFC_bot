@@ -47,3 +47,13 @@ def get_event_uncompleted() -> [Event]:
 
 def get_event_by_event_id(event_id: int) -> Event:
     return Event.get(Event.id == event_id)
+
+
+def get_tomorrow_events():
+    date = datetime.date.today() + datetime.timedelta(days=1)
+    return Event.select().where(Event.date == date)
+
+
+def get_today_events():
+    date = datetime.date.today()
+    return Event.select().where(Event.date == date)
