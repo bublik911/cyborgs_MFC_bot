@@ -14,7 +14,12 @@ async def main():
     bot = Bot(token=env.TgKeys.TOKEN)
     dp = Dispatcher()
     scheduler = AsyncIOScheduler()
-    dp.include_routers(start.router, menu.router, create_event.router, marking.router, create_player.router, check_players.router)
+    dp.include_routers(start.router,
+                       menu.router,
+                       create_event.router,
+                       marking.router,
+                       create_player.router,
+                       check_players.router)
     scheduler.add_job(notification_for_chatbot, "interval", seconds=3600, args=(bot,))
     scheduler.start()
     await dp.start_polling(bot)
