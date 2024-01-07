@@ -1,5 +1,3 @@
-import datetime
-
 import prettytable
 
 from aiogram import Router, F
