@@ -1,7 +1,5 @@
 import datetime
 
-from dateutil.parser import parse
-
 from aiogram import Bot
 
 from keyboards.answer import answer_yes_no
@@ -9,7 +7,7 @@ from keyboards.answer import answer_yes_no
 from DataBase.models.EventModel import Event
 from DataBase.repositories import PlayerRepository, EventRepository, MarkRepository
 
-from misc.constValues import WEEKDAYS
+from misc.constValues import WEEKDAYS, FIRST_DIVISION
 
 
 def create_message_for_chat(event: Event) -> str:
@@ -50,24 +48,56 @@ def create_names_list(event_id: int) -> [str]:
     return names
 
 
-# TODO: Если сегодня тренировка только в манеже, то рассылка всем. Если тренировка в манеже и ИАТЭ - в один день,
-#  то рассылка по заявке
 async def notification_for_chatbot(bot: Bot):
-    events_table = EventRepository.get_event_uncompleted()
+    await players_polling(bot)
+    await reminder(bot)
+
+
+async def reminder(bot: Bot):
     hour = datetime.datetime.now().time().hour
     day = datetime.datetime.now().date().day
-    for event in events_table:
+    today_events = EventRepository.get_today_events()
+    first_division_event = False
+    second_division_event = False
+    for event in today_events:
+        if event.place == FIRST_DIVISION:
+            first_division_event = True
+        else:
+            second_division_event = True
 
-        if event.send is not(None) and event.time.hour - hour == 3 and event.date.day == day:
+    for event in today_events:
+        if event.send is not None and event.time.hour - hour == 3 and event.date.day == day:
             message = create_message_for_reminder(event)
-            EventRepository.update_event_completed(event.id)
-            players = PlayerRepository.get_player_by_place(event.place)
+
+            if not first_division_event and second_division_event and event.type_of_event == "Тренировка":
+                players = PlayerRepository.get_all_players()
+            else:
+                players = PlayerRepository.get_player_by_place(event.place)
             for player in players:
                 await bot.send_message(player.chat_id, message)
+            EventRepository.update_event_completed(event.id)
 
+
+async def players_polling(bot: Bot):
+    hour = datetime.datetime.now().time().hour
+    day = datetime.datetime.now().date().day
+    tomorrow_events = EventRepository.get_tomorrow_events()
+    first_division_event = False
+    second_division_event = False
+    for event in tomorrow_events:
+        if event.place == FIRST_DIVISION:
+            first_division_event = True
+        else:
+            second_division_event = True
+
+    for event in tomorrow_events:
         if event.send is None and event.date.day - day == 1 and event.time.hour - hour < 12:
             message = create_message_for_notification(event)
-            players = PlayerRepository.get_player_by_place(event.place)
+            if not first_division_event and second_division_event and event.type_of_event == "Тренировка":
+                players = PlayerRepository.get_all_players()
+            else:
+                players = PlayerRepository.get_player_by_place(event.place)
+
             for player in players:
                 await bot.send_message(player.chat_id, message,
                                        reply_markup=answer_yes_no(event.id))
@@ -83,4 +113,3 @@ def phone_parse(x) -> str:
             phone += i
     phone = phone[-10:]
     return phone
-
