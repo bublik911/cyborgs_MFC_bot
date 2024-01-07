@@ -8,7 +8,10 @@ from aiogram.fsm.context import FSMContext
 
 from typing import NoReturn
 
+from DataBase.utils import connect
 
+
+@connect
 async def create_event(state: FSMContext) -> NoReturn:
     event = await state.get_data()
     day = int(event['day'])
@@ -33,27 +36,33 @@ async def create_event(state: FSMContext) -> NoReturn:
     await state.clear()
 
 
+@connect
 def update_event_completed(event_id) -> NoReturn:
     Event.update(completed=1).where(Event.id == event_id).execute()
 
 
+@connect
 def update_event_send(event_id) -> NoReturn:
     Event.update(send=1).where(Event.id == event_id).execute()
 
 
+@connect
 def get_event_uncompleted() -> [Event]:
     return Event.select().where(Event.completed.is_null())
 
 
+@connect
 def get_event_by_event_id(event_id: int) -> Event:
     return Event.get(Event.id == event_id)
 
 
+@connect
 def get_tomorrow_events():
     date = datetime.date.today() + datetime.timedelta(days=1)
     return Event.select().where(Event.date == date)
 
 
+@connect
 def get_today_events():
     date = datetime.date.today()
     return Event.select().where(Event.date == date)

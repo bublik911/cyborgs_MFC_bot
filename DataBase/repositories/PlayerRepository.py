@@ -7,7 +7,10 @@ from aiogram.types import Message
 
 from typing import NoReturn
 
+from DataBase.utils import connect
 
+
+@connect
 async def create_player(state: FSMContext) -> NoReturn:
     data = await state.get_data()
     Player.create(name=data['name'],
@@ -17,43 +20,53 @@ async def create_player(state: FSMContext) -> NoReturn:
     await state.clear()
 
 
+@connect
 def create_players_list(place: str) -> [Player]:
     return Player.select(Player.name, Player.phone_number).where((Player.place == place) &
                                                                  (Player.deleted_at.is_null()))
 
 
+@connect
 def count_player_by_phone_number(message: Message) -> int:
     return Player.select().where(Player.phone_number == message.contact.phone_number[-10:]).count()
 
 
+@connect
 def update_player_chat_id_by_phone_number(message: Message) -> NoReturn:
     Player.update(chat_id=message.chat.id).where(Player.phone_number == message.contact.phone_number[-10:]).execute()
 
 
+@connect
 def delete_player_by_id(id: int) -> NoReturn:
     today = datetime.date.today()
     Player.update(deleted_at=today).where(Player.id == id).execute()
 
 
+@connect
 def get_id_by_phone_number(phone_number: str) -> int:
     return Player.get(Player.phone_number == phone_number[-10:]).id
 
 
+@connect
 def get_player_status_by_phone_number(message: Message) -> int:
     return Player.get(Player.phone_number == message.contact.phone_number[-10:]).status
 
 
+@connect
 def get_player_id_by_chat_id(chat_id: int) -> int:
     return Player.get(Player.chat_id == chat_id).id
 
 
+@connect
 def get_player_name_by_id(player_id: int) -> str:
     return Player.get(Player.id == player_id).name
 
 
+@connect
 def get_player_by_place(place: str) -> [Player]:
     return Player.select().where((Player.place == place) & (Player.chat_id.is_null(False)))
 
 
+@connect
 def get_all_players():
     return Player.select().where((Player.chat_id.is_null(False)) & (Player.deleted_at.is_null()))
