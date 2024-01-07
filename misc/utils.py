@@ -1,7 +1,5 @@
 import datetime
 
-from dateutil.parser import parse
-
 from aiogram import Bot
 
 from keyboards.answer import answer_yes_no
